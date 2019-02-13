@@ -17,12 +17,13 @@ class ProductResourceCollection extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->detail,
-            'price' => $this->price,
-            'stock' => $this->stock,
-            'discount' => $this->discount,
-            'firstUpload' => $this->created_at,
-            'lastUpdate' => $this->updated_at,
+            'originalPrice' => $this->price,
+            'currentPrice' => round($this->price - ($this->discount * $this->price / 100), 2),
+            'discount' => $this->discount . '%',
+            'rating' => $this->reviews->count() > 0 ? round($this->reviews->sum('star') / $this->reviews->count()) : 'No rating found!',
+            'href' => [
+                'link' => route('products.show', $this->id),
+            ],
         ];
     }
 }
