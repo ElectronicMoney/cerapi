@@ -18,7 +18,7 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->text('detail');
             $table->double('price', 15, 2);
-            $table->integer('stcok');
+            $table->integer('stock');
             $table->double('discount', 15, 2);
             $table->timestamps();
         });
