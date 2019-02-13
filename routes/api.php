@@ -26,7 +26,7 @@ Route::apiResource('/products', 'Api\Product\ProductController');
  * ReviewCotroller
  */
  Route::group(['prefix' => 'products'], function() {
-    Route::apiResource('/{product}/reviews', 'Api\Product\ReviewController');
+    Route::apiResource('/{product}/reviews', 'Api\Review\ReviewController');
  });
 
 
