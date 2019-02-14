@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Api\Product;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductResourceCollection;
 use App\Http\Requests\ProductRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\Exceptions\ProductNotBelongsToUserException;
+use Auth;
+use App\Models\User;
+use App\Models\Product;
 
 class ProductController extends Controller
 {
@@ -41,6 +44,7 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $product = new Product;
+        $product->user_id = Auth::User()->id;
         $product->name = $request->name;
         $product->detail = $request->description;
         $product->stock = $request->stock;
@@ -74,6 +78,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $this->productUserCheck($product);
         $request['detail'] = $request->description;
         unset($request->description);
         $product->update($request->all());
@@ -96,4 +101,17 @@ class ProductController extends Controller
         //Response
         return response(null, Response::HTTP_NO_CONTENT);
     }
+
+    /**
+     * Check if the auth user matches the product user
+     *
+     * @param  \App\Models\Product  $product
+     * @return \Illuminate\Http\Response
+     */
+
+     public function productUserCheck($product) {
+        if (Auth::user()->id !== $product->user_id) {
+            throw new ProductNotBelongsToUserException;
+        }
+     }
 }
